@@ -123,7 +123,9 @@ class ExiftoolServer extends Exiftool
     private function setUp()
     {
         $this->pipefile = tempnam(sys_get_temp_dir(), 'exiftool-pipe');
-        $this->server = new Process(self::getBinary() . ' -stay_open True -@ ' . $this->pipefile);
+        $command = self::getBinary() . ' -stay_open True -@ ' . $this->pipefile;
+        // Process::fromShellCommandline replaces the string constructor, deprecated since symfony 4.2
+        $this->server = method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($command) : new Process($command);
     }
 
     private function cleanup()

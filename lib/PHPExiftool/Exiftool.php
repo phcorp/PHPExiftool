@@ -45,7 +45,8 @@ class Exiftool implements LoggerAwareInterface
     public function executeCommand($command)
     {
         $command = self::getBinary() . ' ' . $command;
-        $process = new Process($command);
+        // Process::fromShellCommandline replaces the string constructor, deprecated since symfony 4.2
+        $process = method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($command) : new Process($command);
 
         $this->logger->addInfo(sprintf('Exiftool executes command %s', $process->getCommandLine()));
 
