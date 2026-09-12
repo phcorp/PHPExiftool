@@ -11,7 +11,6 @@
 
 namespace PHPExiftool;
 
-use Doctrine\Common\Cache\ArrayCache;
 use PHPExiftool\RDFParser;
 use PHPExiftool\FileEntity;
 use PHPExiftool\Driver\Value\ValueInterface;
@@ -39,10 +38,11 @@ class FileEntity implements \IteratorAggregate
     private $file;
 
     /**
+     * Metadata already parsed, kept for the life of the entity.
      *
-     * @var ArrayCache
+     * @var array
      */
-    private $cache;
+    private $cache = array();
 
     /**
      *
@@ -62,8 +62,6 @@ class FileEntity implements \IteratorAggregate
     {
         $this->dom = $dom;
         $this->file = $file;
-
-        $this->cache = new ArrayCache();
 
         $this->parser = $parser->open($dom->saveXML());
 
@@ -92,13 +90,13 @@ class FileEntity implements \IteratorAggregate
     {
         $key = realpath($this->file);
 
-        if ($this->cache->contains($key)) {
-            return $this->cache->fetch($key);
+        if (array_key_exists($key, $this->cache)) {
+            return $this->cache[$key];
         }
 
         $metadatas = $this->parser->ParseMetadatas();
 
-        $this->cache->save($key, $metadatas);
+        $this->cache[$key] = $metadatas;
 
         return $metadatas;
     }
