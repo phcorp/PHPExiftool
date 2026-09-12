@@ -231,7 +231,7 @@ class RDFParser
      * @param  TagInterface   $tag  The tag associated
      * @return ValueInterface The value extracted
      */
-    protected function readNodeValue(\DOMNode $node, TagInterface $tag = null)
+    protected function readNodeValue(\DOMNode $node, ?TagInterface $tag = null)
     {
         $nodeName = $this->normalize($node->nodeName);
 
